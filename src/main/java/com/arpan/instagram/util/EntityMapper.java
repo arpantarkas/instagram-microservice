@@ -20,9 +20,9 @@ public class EntityMapper {
                 user.getUsername());
     }
 
-    public static Post toPost(PostDto postDto) {
-        return new Post(postDto.getUrl(),
-                        postDto.getUser());
+    public static Post toPost(PostDto postDto, User user) {
+        return new Post(postDto.getCaption(), user);
+
     }
 }
 

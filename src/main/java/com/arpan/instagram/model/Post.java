@@ -1,33 +1,34 @@
 package com.arpan.instagram.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
 import lombok.Getter;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.Set;
 
-@Getter
-@ToString
+@Data
 @Entity
 @Table(name = "post")
 public class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+//    @Column(name = "post_id")
     private Long id;
 
-    private String url;
+    private String caption;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
-
-//    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private Set<Image> imageSet;
 
     @Column(name = "created_at")
     @CreationTimestamp
@@ -39,8 +40,8 @@ public class Post {
 
     protected Post () { }
 
-    public Post(String url, User user) {
-        this.url = url;
+    public Post(String caption, User user) {
+        this.caption = caption;
         this.user = user;
     }
 }

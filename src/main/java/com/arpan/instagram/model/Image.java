@@ -22,7 +22,7 @@ public class Image {
 
     private String url;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
@@ -36,7 +36,8 @@ public class Image {
 
     protected Image () { }
 
-    public Image(String url) {
+    public Image(String url, Post post) {
         this.url = url;
+        this.post = post;
     }
 }
