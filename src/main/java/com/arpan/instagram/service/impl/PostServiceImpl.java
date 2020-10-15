@@ -45,7 +45,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public ResponseDto<Post> getPostById(Long userId, Long postId) {
-        return postRepository.findById(postId)
+        return postRepository.findByIdAndUserId(postId, userId)
                 .map(post -> ResponseUtil.setSuccessResponse(200, "Success", Collections.singletonList(post))
                 ).orElseGet(() -> ResponseUtil.setErrorResponse(404, "Post Not Found"));
 
@@ -78,14 +78,13 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public ResponseDto<Post> updatePost(Long userId, Long postId, String caption) {
-        return userRepository.findById(userId)
-                .map(user -> postRepository.findById(postId)
-                        .map(post -> {
+        return postRepository.findByIdAndUserId(postId, userId)
+                .map(post -> {
                             post.setCaption(caption);
                             return ResponseUtil.setSuccessResponse(200, "Success", Collections.singletonList(postRepository.save(post)));
                         })
-                        .orElseGet(() -> ResponseUtil.setErrorResponse(404, "Post not found")))
-                .orElseGet(() -> ResponseUtil.setErrorResponse(404, "User not found"));
+                .orElseGet(() -> ResponseUtil.setErrorResponse(404, "Post not found"));
+//                .orElseGet(() -> ResponseUtil.setErrorResponse(404, "User not found"));
 
     }
 
