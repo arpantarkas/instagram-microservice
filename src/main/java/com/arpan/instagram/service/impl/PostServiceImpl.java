@@ -49,13 +49,6 @@ public class PostServiceImpl implements PostService {
                 .map(post -> ResponseUtil.setSuccessResponse(200, "Success", Collections.singletonList(post))
                 ).orElseGet(() -> ResponseUtil.setErrorResponse(404, "Post Not Found"));
 
-        // This Works
-//        return userRepository.findById(userId)
-//                .map(user -> postRepository.findById(postId)
-//                        .map(post -> ResponseUtil.setSuccessResponse(200, "Success", Collections.singletonList(post)))
-//                        .orElseGet(() -> ResponseUtil.setErrorResponse(404, "Post not found")))
-//                .orElseGet(() -> ResponseUtil.setErrorResponse(404, "User not found"));
-
     }
 
     @Override
@@ -84,28 +77,16 @@ public class PostServiceImpl implements PostService {
                             return ResponseUtil.setSuccessResponse(200, "Success", Collections.singletonList(postRepository.save(post)));
                         })
                 .orElseGet(() -> ResponseUtil.setErrorResponse(404, "Post not found"));
-//                .orElseGet(() -> ResponseUtil.setErrorResponse(404, "User not found"));
 
     }
 
     @Override
     public ResponseDto<Object> deletePost(Long userId, Long postId) {
-
-        return postRepository.findById(postId)
+        return postRepository.findByIdAndUserId(postId, userId)
                 .map(post -> {
                     postRepository.delete(post);
                     return ResponseUtil.setSuccessResponse(200, "Success", Collections.emptyList());
                 }).orElseGet(() -> ResponseUtil.setErrorResponse(404, "Post Not found"));
-
-//        return userRepository.findById(userId)
-//                .map(user -> postRepository.findById(postId)
-//                        .map(post -> {
-//                            postRepository.delete(post);
-//                            return ResponseUtil.setSuccessResponse(200, "Success", Collections.emptyList());
-//                        })
-//                        .orElseGet(() -> ResponseUtil.setErrorResponse(404, "Post not found")))
-//                .orElseGet(() -> ResponseUtil.setErrorResponse(404, "User not found"));
-
 
     }
 }

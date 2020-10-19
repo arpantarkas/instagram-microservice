@@ -5,7 +5,6 @@ import com.arpan.instagram.dto.ResponseDto;
 import com.arpan.instagram.model.Post;
 import com.arpan.instagram.service.PostService;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
