@@ -11,7 +11,7 @@ import java.util.List;
 public interface PostService {
 
     ResponseDto<Post> getPostsByUserId(Long userId, Pageable pageable);
-    ResponseDto<Post> getPostById(Long userId, Long postId);
+    ResponseDto<Post> getPostByIdAndUserId(Long userId, Long postId);
     ResponseDto<?> createPost(Long userId, PostDto postDto);
     ResponseDto<Post> updatePost(Long userId, Long postId, String caption);
     ResponseDto<Object> deletePost(Long userId, Long postId);

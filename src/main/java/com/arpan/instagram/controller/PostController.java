@@ -29,7 +29,7 @@ public class PostController {
     @GetMapping("/api/users/{user_id}/posts/{post_id}")
     public ResponseDto<Post> getPostById(@PathVariable(value = "user_id") Long userId,
                                          @PathVariable(value = "post_id") Long postId) {
-        return postService.getPostById(userId, postId);
+        return postService.getPostByIdAndUserId(userId, postId);
     }
 
 

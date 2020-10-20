@@ -44,7 +44,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public ResponseDto<Post> getPostById(Long userId, Long postId) {
+    public ResponseDto<Post> getPostByIdAndUserId(Long userId, Long postId) {
         return postRepository.findByIdAndUserId(postId, userId)
                 .map(post -> ResponseUtil.setSuccessResponse(200, "Success", Collections.singletonList(post))
                 ).orElseGet(() -> ResponseUtil.setErrorResponse(404, "Post Not Found"));
