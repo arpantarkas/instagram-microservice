@@ -2,6 +2,9 @@ package com.arpan.instagram.service.impl;
 
 import com.arpan.instagram.dto.ResponseDto;
 import com.arpan.instagram.dto.UserDto;
+import com.arpan.instagram.exception.InvalidRequestException;
+import com.arpan.instagram.exception.ResourceConflictException;
+import com.arpan.instagram.exception.UserNotFoundException;
 import com.arpan.instagram.model.User;
 import com.arpan.instagram.repository.UserRepository;
 import com.arpan.instagram.service.UserService;
@@ -13,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -24,55 +29,50 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseDto<User> getAllUsers(Pageable pageable) {
-        return ResponseUtil.setSuccessResponse(200, "Success", userRepository.findAll(pageable).getContent());
+    public List<UserDto> getAllUsers(Pageable pageable) {
+        return userRepository.findAll(pageable).getContent()
+                .stream().map(EntityMapper::toUserDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public ResponseDto<User> getUser(Long id) {
-        return userRepository.findById(id).map(user -> ResponseUtil.setSuccessResponse(
-                200,
-                "Success",
-                Collections.singletonList(user)
-        )).orElseGet(() -> ResponseUtil.setErrorResponse(404, "User Not Found"));
+    public UserDto getUser(Long id) {
+        return userRepository.findById(id)
+                .map(EntityMapper::toUserDto)
+                .orElseThrow(() -> new UserNotFoundException(id.toString()));
     }
 
     @Override
-    public ResponseDto<User> createUser(UserDto userDto) {
+    public UserDto createUser(UserDto userDto) {
         try {
-            List<User> userList = Collections.singletonList(userRepository.save(EntityMapper.toUser(userDto)));
-            return ResponseUtil.setSuccessResponse(201, "User Successfully Created", userList);
+            return EntityMapper.toUserDto(userRepository.save(EntityMapper.toUser(userDto)));
         } catch (DataIntegrityViolationException e) {
-            return ResponseUtil.setErrorResponse(400, "Duplicate Username found, can't create new user. Change username and try again!");
+            throw new InvalidRequestException("username already taken");
         }
     }
 
     @Override
-    public ResponseDto<?> updateUser(UserDto userDto, Long id) {
-        return userRepository.findById(id).map(userUpdated -> {
-            userUpdated.setName(userDto.getName());
-            userUpdated.setUsername(userDto.getUsername());
-            userUpdated.setEmail(userDto.getEmail());
+    public User updateUser(UserDto userDto, Long id) {
+        return userRepository.findById(id).map(user -> {
+            user.setName(userDto.getName());
+            user.setUsername(userDto.getUsername());
+            user.setEmail(userDto.getEmail());
             try {
-                return ResponseUtil.setSuccessResponse(
-                        200,
-                        "User updated",
-                        Collections.singletonList(userRepository.save(userUpdated)));
+                return userRepository.save(user);
             } catch (DataIntegrityViolationException e) {
-                return ResponseUtil.setErrorResponse(500, "Username Already taken");
+                throw new InvalidRequestException("username already taken");
             }
-        }).orElseGet(() ->  ResponseUtil.setErrorResponse(404, "User doesn't exist"));
+        }).orElseThrow(() ->  new UserNotFoundException(id.toString()));
     }
 
     @Override
-    public ResponseDto<Object> deleteUser(Long id) {
-        return userRepository.findById(id).map(user -> {
-                userRepository.delete(user);
-                return ResponseUtil.setSuccessResponse(
-                        200,
-                        "User Deletion successful",
-                        Collections.emptyList());
-        }).orElseGet(() -> ResponseUtil.setErrorResponse(404, "User not found"));
+    public void deleteUser(Long id) {
+
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent())
+            userRepository.delete(user.get());
+        else
+            throw new UserNotFoundException(id.toString());
     }
 
 

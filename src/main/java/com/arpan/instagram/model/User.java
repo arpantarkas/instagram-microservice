@@ -1,9 +1,7 @@
 package com.arpan.instagram.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
+import lombok.experimental.Accessors;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
@@ -14,8 +12,10 @@ import java.util.List;
 import java.util.Set;
 
 @Data
+@NoArgsConstructor
 @Entity
 @Table( name = "user")
+@Accessors(chain = true)
 public class User {
 
     @Id
@@ -40,8 +40,6 @@ public class User {
     @Column(name = "updated_at")
     @UpdateTimestamp
     private Date updatedAt;
-
-    protected User() { }
 
     public User(String name, String username, String email) {
         this.name = name;
