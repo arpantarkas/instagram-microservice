@@ -35,7 +35,7 @@ public class LikeServiceImpl implements LikeService {
             .map(user -> postRepository.findById(postId)
                     .map(post -> {
                         if (likeRepository.findByPostIdAndUserId(postId, userId).isPresent())
-                            throw new AlreadyLikedException("Already liked");
+                            throw new ResourceConflictException("post "+postId+" already liked by user "+ userId);
                         else
                             return likeRepository.save(new Like(post, user));
                     })

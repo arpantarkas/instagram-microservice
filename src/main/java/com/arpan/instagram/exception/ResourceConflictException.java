@@ -2,12 +2,13 @@ package com.arpan.instagram.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class AlreadyLikedException extends BaseException {
-    public AlreadyLikedException(String message) {
+public class ResourceConflictException extends BaseException {
+
+    public ResourceConflictException(String message) {
         super(message);
     }
 
-    public AlreadyLikedException(String message, Throwable cause) {
+    public ResourceConflictException(String message, Throwable cause) {
         super(message, cause);
     }
 
