@@ -10,9 +10,9 @@ import java.util.List;
 
 public interface PostService {
 
-    ResponseDto<Post> getPostsByUserId(Long userId, Pageable pageable);
-    ResponseDto<Post> getPostByIdAndUserId(Long userId, Long postId);
-    ResponseDto<?> createPost(Long userId, PostDto postDto);
-    ResponseDto<Post> updatePost(Long userId, Long postId, String caption);
-    ResponseDto<Object> deletePost(Long userId, Long postId);
+    List<Post> getPostsByUserId(Long userId, Pageable pageable);
+    Post getPostByIdAndUserId(Long userId, Long postId);
+    Post createPost(Long userId, PostDto postDto);
+    Post updatePost(Long userId, Long postId, String caption);
+    void deletePost(Long userId, Long postId);
 }
